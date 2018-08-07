@@ -1,11 +1,14 @@
-'''CLI arguments should be provided in the following order:
-<output log file> <profile picture folder>'''
+'''Finds usernames in an output log and gets profile pictures from those usernames
+
+CLI arguments should be provided in the following order:
+<output log file>* <profile picture folder>
+*required'''
 
 import requests, re, sys, os
 from os.path import join
 
 args = sys.argv # list of str; arguments from CLI
-# NOTE: first item in args is the filename
+# NOTE: first item in args is the filename of this script
 
 USERNAME_PFP_URL = r'http://images-pull.freejam.netdna-cdn.com/customavatar/Live/'
 CLAN_PFP_URL = r'http://images-pull.freejam.netdna-cdn.com/clanavatar/Live/'
@@ -16,7 +19,7 @@ def get_usernames(contents):
     Returns a set of usernames'''
     usernames = set()
     for line in contents:
-        regexed = re.search(r"Player\s\'(\w+)\'", line, re.I)
+        regexed = re.search(r"Player\s\'([^\']+)\'", line, re.I)
         if regexed != None:
             usernames.add(regexed.group(1))
     return usernames
@@ -69,17 +72,18 @@ def save_PFPs(images, folder=None, ext='jpg'):
         with open(join(folder,username+'.'+ext), 'wb') as file:
             file.write(images[username])
 
-
 # start of actual stuff
-with open(args[1], 'r') as file:
-    file_contents = file.readlines() # list of str; lines of the file
+if __name__=='__main__' and len(args)>2:
+    # do stuff
+    with open(args[1], 'r') as file:
+        file_contents = file.readlines() # list of str; lines of the file
 
-print('Extracting usernames...')
-players = get_usernames(file_contents)
-save_usernames(players) # save usernames extracted from output file
+    print('Extracting usernames...')
+    players = get_usernames(file_contents)
+    save_usernames(players) # save usernames extracted from output file
 
-print('Downloading profile pictures...')
-PFPs = get_PFPs(players)
-if len(args)<3:
-    args.append(None)
-save_PFPs(PFPs, folder=args[2]) # save profile pictures of all usernames to files
+    print('Downloading profile pictures...')
+    PFPs = get_PFPs(players)
+    if len(args)<3:
+        args.append(None)
+    save_PFPs(PFPs, folder=args[2]) # save profile pictures of all usernames to files

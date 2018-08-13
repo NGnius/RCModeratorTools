@@ -10,7 +10,7 @@ parser.add_argument('--resolutiony', '--ry', dest='resY', type=int, metavar='y',
                     help='resolution height, in pixels (default:1080)', default=1080) # captures resolution height
 
 parser.add_argument('--fullscreen', '--fs', dest='is_full', type=int, metavar='n', choices=[0,1],
-                    help='Fullscreen not fullscreen (windowed) mode (default:1)', default=1) # captures fullscreen mode
+                    help='fullscreen (windowed borderless) mode or windowed mode (default:1). 1=Fullscreen, 0=Windowed', default=1) # captures fullscreen mode
 
 parser.add_argument('--music', '--musicvolume', dest='music', type=float, metavar='float',
                     help='music volume, out of 1 (default:0)', default=0) # captures music volume
@@ -34,7 +34,7 @@ parser.add_argument('--capped', '--fpscapped', dest='fps_is_capped', type=int, m
                     help='FPS limit activated (default:1)', default=1) # captures fps cap checkmark state
 
 parser.add_argument('--camera', '--camerashake', dest='camera_shake', type=int, metavar='n', choices=[0,1],
-                    help='FPS limit activated (default:1)', default=1) # captures camera shake checkmark state
+                    help='Camera shake activated (default:1)', default=1) # captures camera shake checkmark state
 
 args = parser.parse_args()
 print("Generating prefs file...")
@@ -92,7 +92,7 @@ content+='''
 content+='''
 </unity_prefs>'''
 
-print("Writing to prefs file...")
+print("Writing to ./prefs file...")
 with open('./prefs', 'w') as file: # always writes to prefs file in local directory
     file.write(content)
 # TODO: Add saving filepath optional argument
